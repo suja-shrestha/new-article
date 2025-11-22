@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+// 1. IMPORT the helper function properly
+import { fetchNewsApi } from "./api/news"; 
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -8,12 +10,16 @@ function App() {
 
   const fetchNews = async () => {
     setIsLoading(true);
-    setArticles([]);
+    setArticles([]); // Clear previous articles while loading
 
     try {
-      const res = await fetch(`/api/news?search=${encodeURIComponent(searchQuery)}`);
-      const data = await res.json();
-      setArticles(data.articles || []);
+      // 2. REMOVE the fetch('/api/news...') line
+      // 3. CALL the function directly
+      const data = await fetchNewsApi(searchQuery);
+      
+      // 4. The helper function already returns the array of articles, 
+      // so we can set it directly.
+      setArticles(data); 
     } catch (err) {
       console.log(err);
     } finally {
@@ -50,16 +56,7 @@ function App() {
       <div className="news-list">
         {isLoading && (
           <div className="loading-container">
-            <div className="spinner-wrapper">
-              <div className="spinner"></div>
-              <div className="spinner-ring"></div>
-            </div>
-            <p className="loading-text">Fetching latest news...</p>
-            <div className="loading-dots">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+             <p className="loading-text">Fetching latest news...</p>
           </div>
         )}
 
