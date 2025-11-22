@@ -10,8 +10,8 @@ function App() {
     setIsLoading(true);
     setArticles([]);
 
-    fetch(`https://newsapi.org/v2/everything?q=${searchQuery}&searchIn=title&sortBy=publishedAt&apiKey=d9ec7b7479844dd582b14074e1f54703`)
-      .then(response => response.json())
+    fetch(`/api/news?search=${searchQuery}`)
+      .then(res => res.json())
       .then(data => {
         setArticles(data.articles || []);
         setIsLoading(false);
@@ -20,6 +20,7 @@ function App() {
         console.log(err);
         setIsLoading(false);
       });
+
   }
 
   useEffect(() => {
@@ -63,7 +64,7 @@ function App() {
             </div>
           </div>
         )}
-        
+
         {!isLoading && articles.map((article, index) => (
           <div key={index} className="card">
             {article.urlToImage && (
