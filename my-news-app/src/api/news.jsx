@@ -1,20 +1,34 @@
-// src/api/news.jsx
 export const fetchNewsApi = async (searchQuery = "technology") => {
-  const apiKey = "d9ec7b7479844dd582b14074e1f54703"; 
-  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(searchQuery)}&sortBy=publishedAt&apiKey=${apiKey}`;
+  const apiKey = "7cbc87b81a1ffe46e888c7c5d7fad7da"; // Your GNews Key
+  
+  // GNews URL structure (different from NewsAPI)
+  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(searchQuery)}&lang=en&image=required&apikey=${apiKey}`;
 
   try {
     const response = await fetch(url);
     const data = await response.json();
 
-    console.log("API Response:", data); // Check your console to see this!
+    // Debugging: Log to see if it works
+    console.log("GNews Response:", data);
 
-    if (data.status !== "ok") {
-      console.error("API Error:", data.message); // Log if API denies request
+    // GNews returns an 'errors' object if something is wrong
+    if (data.errors) {
+      console.error("GNews API Error:", data.errors);
       return [];
     }
 
-    return data.articles || [];
+    // GNews uses 'image' instead of 'urlToImage', so we map it to match your App.jsx
+    const formattedArticles = (data.articles || []).map(article => ({
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      urlToImage: article.image, // <--- FIX: GNews calls it 'image', your App expects 'urlToImage'
+      publishedAt: article.publishedAt,
+      source: article.source
+    }));
+
+    return formattedArticles;
+
   } catch (error) {
     console.error("Error fetching news:", error);
     return [];
