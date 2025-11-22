@@ -6,22 +6,20 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("technology");
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchNews = () => {
+  const fetchNews = async () => {
     setIsLoading(true);
     setArticles([]);
 
-    fetch(`/api/news?search=${searchQuery}`)
-      .then(res => res.json())
-      .then(data => {
-        setArticles(data.articles || []);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.log(err);
-        setIsLoading(false);
-      });
-
-  }
+    try {
+      const res = await fetch(`/api/news?search=${encodeURIComponent(searchQuery)}`);
+      const data = await res.json();
+      setArticles(data.articles || []);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchNews();
@@ -63,6 +61,10 @@ function App() {
               <span></span>
             </div>
           </div>
+        )}
+
+        {!isLoading && articles.length === 0 && (
+          <p style={{ textAlign: "center" }}>No articles found.</p>
         )}
 
         {!isLoading && articles.map((article, index) => (

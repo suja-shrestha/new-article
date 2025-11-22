@@ -1,13 +1,19 @@
-export default async function handler(req, res) {
-  const { query } = req.query;
-
-  const apiUrl = `https://newsapi.org/v2/everything?q=${query}&searchIn=title&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
+// src/api/news.jsx
+export const fetchNewsApi = async (searchQuery = "technology") => {
+  const apiKey = "d9ec7b7479844dd582b14074e1f54703"; // ideally use env variable
+  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(searchQuery)}&searchIn=title&sortBy=publishedAt&apiKey=${apiKey}`;
 
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(url);
     const data = await response.json();
-    res.status(200).json(data);
+
+    if (data.status !== "ok") {
+      return [];
+    }
+
+    return data.articles || [];
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch news" });
+    console.error("Error fetching news:", error);
+    return [];
   }
-}
+};
