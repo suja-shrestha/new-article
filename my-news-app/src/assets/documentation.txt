@@ -1,7 +1,3 @@
-Here is the complete, final documentation for your project. This is written specifically for you to study. It explains the entire journey of your code changes, why they happened, and how the final code works line-by-line.
-
-Save this as STUDY_NOTES.md.
-
 📘 React Global News Project - Final Documentation
 
 Project: Real-time News Aggregator
